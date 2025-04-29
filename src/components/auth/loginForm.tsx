@@ -105,7 +105,7 @@ export default function LoginForm() {
 
             <form onSubmit={handleLogin} className="space-y-8">
                 <div className="space-y-4">
-                    <EmailInput input={email} onChange={setEmail} />
+                    <EmailInput input={email} onChange={setEmail} type="email"/>
                     <PasswordInput
                         forgotPasswordLink="#"
                         onChange={setPassword}
@@ -174,7 +174,7 @@ export default function LoginForm() {
             <div className="text-center text-p3-paragraphy-small text-primary-dark">
                 Don&apos;t have an account?{" "}
                 <Link
-                    href="/api/auth/signup"
+                    href="/signup"
                     className="text-p3-paragraphy-small text-primary-dark font-bold no-underline hover:underline"
                 >
                     Register

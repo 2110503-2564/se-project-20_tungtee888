@@ -19,7 +19,7 @@ import Rating from '@mui/material/Rating'
 
 import updateReview from "@/libs/updateReview"
 import deleteReview from "@/libs/deleteReview"
-
+import SideBar from "@/components/manage/sidebar"
 
 export default function Dashboard() {
 
@@ -33,6 +33,7 @@ export default function Dashboard() {
   const [editingId, setEditingId] = useState<string>("");
   const [editedComment, setEditingComment] = useState<string>("");
   const [editedRating, setEditedRating] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true);
   
 
 
@@ -48,6 +49,8 @@ export default function Dashboard() {
         setReviewCount(respond.count);
       } catch (err) {
         console.error("เกิดข้อผิดพลาดในการโหลดรีวิว : ", err)
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -128,54 +131,7 @@ export default function Dashboard() {
 
         <div className="flex flex-col md:flex-row gap-8">
           {/* Sidebar */}
-          <div className="w-full md:w-64">
-            <nav className="space-y-1">
-              <div>
-                <button className="w-full flex items-center justify-between p-3 rounded-md hover:bg-gray-100">
-                  <span className="font-medium">Current</span>
-                  <ChevronDown className="h-4 w-4" />
-                </button>
-                <div className="pl-6 py-1">
-                  <Link href="/manage/current-reservations" className="block py-1.5 text-gray-600">
-                    Reservations
-                  </Link>
-                </div>
-              </div>
-
-              {/* <div>
-                <button className="w-full flex items-center justify-between p-3 rounded-md">
-                  <span className="font-medium">History</span>
-                  <ChevronDown className="h-4 w-4" />
-                </button>
-                <div className="pl-6 py-1">
-                  <Link href="/manage/history/reservations" className="block py-1.5 text-gray-600">
-                    Reservations
-                  </Link>
-                  <Link href="/manage/history/reviews" className="block py-1.5 text-gray-600">
-                    Reviews
-                  </Link>
-                </div>
-              </div> */}
-
-              <div>
-                <button className="w-full flex items-center justify-between p-3 rounded-md bg-gray-100">
-                  <span className="font-medium">History</span>
-                  <ChevronDown className="h-4 w-4" />
-                </button>
-                <div className="pl-6 py-1">
-                  <Link href="/manage/history/reservations" className="block py-1.5 text-gray-600">
-                    Reservations
-                  </Link>
-                  <Link href="/manage/history/reviews" className="block py-1.5 font-medium">
-                    Reviews
-                  </Link>
-                  <Link href="/manage/history/notifications" className="block py-1.5 text-gray-600">
-                    Notifications
-                </Link>
-                </div>
-              </div>
-            </nav>
-          </div>
+          <SideBar/>
 
 
           {/* Main Content */}
@@ -192,8 +148,10 @@ export default function Dashboard() {
             </div>
 
             <div className="space-y-4">
-              {reviews.length === 0 ? (
+              {reviews.length === 0 && loading ? (
                 <p>กำลังโหลดข้อมูลรีวิว...</p>
+              ) : reviews.length === 0 && !loading ? (
+                <p>ไม่มีข้อมูล</p>
               ) : (
                 reviews.map((review) => (
                     <div
@@ -225,6 +183,7 @@ export default function Dashboard() {
                           </div>
                         </div>
                       {/* Conditional rendering for editing or displaying the review */}
+
                       {editingId === review._id ? (
                         <div className="space-y-2">
                           <textarea
@@ -264,11 +223,17 @@ export default function Dashboard() {
                           <p className="text-sm text-gray-600">{comment.get(review._id)}</p>
                         </>
                       )}
+
                     </div>
                   </div>
                 ))
-              )}
+              )
+              
+              }
             </div>
+
+
+            
           </div>
         </div>
         <ToastContainer/>
